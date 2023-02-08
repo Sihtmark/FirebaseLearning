@@ -13,6 +13,8 @@
 		A04C18562993BFF800496EA0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A04C18552993BFF800496EA0 /* Preview Assets.xcassets */; };
 		A04C185D2993DFC600496EA0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A04C185C2993DFC600496EA0 /* GoogleService-Info.plist */; };
 		A04C18602993E4AD00496EA0 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = A04C185F2993E4AD00496EA0 /* FirebaseFirestore */; };
+		A054DC532993ED0F00F61F9A /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A054DC522993ED0F00F61F9A /* ViewModel.swift */; };
+		A054DC552993ED4600F61F9A /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = A054DC542993ED4600F61F9A /* Book.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +24,8 @@
 		A04C18522993BFF800496EA0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A04C18552993BFF800496EA0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A04C185C2993DFC600496EA0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A054DC522993ED0F00F61F9A /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		A054DC542993ED4600F61F9A /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +64,8 @@
 				A04C18522993BFF800496EA0 /* Assets.xcassets */,
 				A04C185C2993DFC600496EA0 /* GoogleService-Info.plist */,
 				A04C18542993BFF800496EA0 /* Preview Content */,
+				A054DC522993ED0F00F61F9A /* ViewModel.swift */,
+				A054DC542993ED4600F61F9A /* Book.swift */,
 			);
 			path = FirebaseLearning;
 			sourceTree = "<group>";
@@ -150,6 +156,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				A04C18512993BFF600496EA0 /* ContentView.swift in Sources */,
+				A054DC552993ED4600F61F9A /* Book.swift in Sources */,
+				A054DC532993ED0F00F61F9A /* ViewModel.swift in Sources */,
 				A04C184F2993BFF600496EA0 /* FirebaseLearningApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -20,11 +20,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct FirebaseLearningApp: App {
     // register app delegate for Firebase setup
-      @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
+    @StateObject private var model = ViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView().environmentObject(model)
         }
     }
 }

@@ -8,19 +8,32 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var model: ViewModel
+    
+    @State var isAddingNewBook = false
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        NavigationView {
+            List {
+                ForEach(model.list, id: \.self) { book in
+                    NavigationLink {
+                        
+                    } label: {
+                        VStack(alignment: .leading) {
+                            Text(book.title)
+                            Text(book.author)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+            }
+            .navigationTitle("My library")
         }
-        .padding()
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView().environmentObject(ViewModel())
     }
 }
