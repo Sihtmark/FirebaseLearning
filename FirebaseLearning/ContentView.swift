@@ -21,13 +21,42 @@ struct ContentView: View {
                     } label: {
                         VStack(alignment: .leading) {
                             Text(book.title)
+                                .font(.title3)
+                                .bold()
                             Text(book.author)
                                 .foregroundColor(.secondary)
                         }
                     }
+                    .swipeActions(allowsFullSwipe: true) {
+                        Button(role: .destructive) {
+                            model.deleteData(book: book)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                        
+                    }
+                }
+                .onDelete(perform: model.deleteData1)
+                .onMove {
+                    model.list.move(fromOffsets: $0, toOffset: $1)
                 }
             }
             .navigationTitle("My library")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    EditButton()
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        isAddingNewBook.toggle()
+                    } label: {
+                        Label("Add book", systemImage: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $isAddingNewBook) {
+                NewBookView()
+            }
         }
     }
 }

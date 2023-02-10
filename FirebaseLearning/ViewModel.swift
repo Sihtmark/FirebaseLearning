@@ -7,16 +7,19 @@
 
 import Foundation
 import Firebase
+import SwiftUI
 
 class ViewModel: ObservableObject {
     @Published var list = [Book]()
+    
+    let db = Firestore.firestore()
     
     init() {
         getData()
     }
     
     func getData() {
-        let db = Firestore.firestore()
+//        let db = Firestore.firestore()
         db.collection("library").getDocuments { snapshot, error in
             if error == nil {
                 if let snapshot = snapshot {
@@ -38,7 +41,7 @@ class ViewModel: ObservableObject {
     }
     
     func addData(title: String, author: String, genre: String) {
-        let db = Firestore.firestore()
+//        let db = Firestore.firestore()
         db.collection("library").addDocument(data: ["title": title, "author": author, "genre": genre]) { error in
             if error == nil {
                 print("We just added new book to the data on the Firestore")
@@ -50,7 +53,7 @@ class ViewModel: ObservableObject {
     }
     
     func updateData(book: Book, title: String, author: String, genre: String) {
-        let db = Firestore.firestore()
+//        let db = Firestore.firestore()
         db.collection("library").document(book.id).setData(["title": title, "author": author, "genre": genre]) { error in
             if error == nil {
                 print("We just updated info in your book on the Firestore")
@@ -61,8 +64,14 @@ class ViewModel: ObservableObject {
         }
     }
     
+    func deleteData1(offsets: IndexSet) {
+        for index in offsets {
+            deleteData(book: list[index])
+        }
+    }
+    
     func deleteData(book: Book) {
-        let db = Firestore.firestore()
+//        let db = Firestore.firestore()
         db.collection("library").document(book.id).delete { error in
             if error == nil {
                 DispatchQueue.main.async {
