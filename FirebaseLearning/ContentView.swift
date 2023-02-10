@@ -17,7 +17,7 @@ struct ContentView: View {
             List {
                 ForEach(model.list, id: \.self) { book in
                     NavigationLink {
-                        
+                        BookView(book: book)
                     } label: {
                         VStack(alignment: .leading) {
                             Text(book.title)
@@ -56,6 +56,7 @@ struct ContentView: View {
             }
             .sheet(isPresented: $isAddingNewBook) {
                 NewBookView()
+//                    .presentationDetents([.medium])
             }
         }
     }

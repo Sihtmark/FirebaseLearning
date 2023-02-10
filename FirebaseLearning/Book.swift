@@ -13,3 +13,9 @@ struct Book: Hashable, Identifiable {
     let author: String
     let genre: String
 }
+
+let sampleBook = Book(
+    id: "pojnpojp[qwjef",
+    title: "Lady with a dog",
+    author: "Anton Pavlovich Chekhov",
+    genre: "fiction")
