@@ -8,14 +8,18 @@
 import Foundation
 import Firebase
 import SwiftUI
+import FirebaseStorage
 
 class ViewModel: ObservableObject {
     @Published var list = [Book]()
     
     let db = Firestore.firestore()
+    let storage = Storage.storage()
+    
     
     init() {
         getData()
+        
     }
     
     func getData() {
