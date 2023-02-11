@@ -15,6 +15,7 @@
 		A04C18602993E4AD00496EA0 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = A04C185F2993E4AD00496EA0 /* FirebaseFirestore */; };
 		A054DC532993ED0F00F61F9A /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A054DC522993ED0F00F61F9A /* ViewModel.swift */; };
 		A054DC552993ED4600F61F9A /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = A054DC542993ED4600F61F9A /* Book.swift */; };
+		A0B415AC2997E28400B3673C /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = A0B415AB2997E28400B3673C /* FirebaseStorage */; };
 		A0B7C4222996311F00881213 /* NewBookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0B7C4212996311F00881213 /* NewBookView.swift */; };
 		A0B7C42429965A0B00881213 /* BookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0B7C42329965A0B00881213 /* BookView.swift */; };
 /* End PBXBuildFile section */
@@ -38,6 +39,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A04C18602993E4AD00496EA0 /* FirebaseFirestore in Frameworks */,
+				A0B415AC2997E28400B3673C /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -49,6 +51,7 @@
 			children = (
 				A04C184D2993BFF600496EA0 /* FirebaseLearning */,
 				A04C184C2993BFF600496EA0 /* Products */,
+				A0B415AA2997E28400B3673C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -84,6 +87,13 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		A0B415AA2997E28400B3673C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -102,6 +112,7 @@
 			name = FirebaseLearning;
 			packageProductDependencies = (
 				A04C185F2993E4AD00496EA0 /* FirebaseFirestore */,
+				A0B415AB2997E28400B3673C /* FirebaseStorage */,
 			);
 			productName = FirebaseLearning;
 			productReference = A04C184B2993BFF600496EA0 /* FirebaseLearning.app */;
@@ -384,6 +395,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A04C185E2993E4AD00496EA0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		A0B415AB2997E28400B3673C /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A04C185E2993E4AD00496EA0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
