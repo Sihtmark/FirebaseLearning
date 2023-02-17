@@ -16,46 +16,49 @@ struct BookView: View {
     @State private var title = ""
     @State private var author = ""
     @State private var genre = ""
-    @State private var isEditing = false
+    @State private var data: Data?
     
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
-                if isEditing {
-                    TextField(book.title, text: $title)
-                    TextField(book.author, text: $author)
-                    TextField(book.genre, text: $genre)
+                if let data = data, let uiImage = UIImage(data: data) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFit()
+                        .cornerRadius(15)
+                        .padding()
                 } else {
-                    Text(title)
-                    Text(author)
-                    Text(genre)
-                    Button("Save") {
-                        model.updateData(book: book, title: title, author: author, genre: genre)
-                        dismiss()
-                    }
-                    .disabled(title.count < 3 || author.count < 3 || genre.count < 3)
-                    .buttonStyle(.borderedProminent)
+                    Image(systemName: "photo.artframe")
+                        .resizable()
+                        .foregroundColor(.yellow.opacity(0.6))
+                        .background(.green)
+                        .scaledToFit()
+                        .cornerRadius(15)
+                        .padding()
                 }
-            }
-            .onAppear {
-                title = book.title
-                author = book.author
-                genre = book.genre
-            }
-            .padding()
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(isEditing ? "Done" : "Edit") {
-                        isEditing.toggle()
-                    }
+                TextField(book.title, text: $title)
+                TextField(book.author, text: $author)
+                TextField(book.genre, text: $genre)
+                Button("Save") {
+                    model.updateData(book: book, title: title, author: author, genre: genre)
+                    dismiss()
                 }
+                .disabled(title.count < 3 || author.count < 3 || genre.count < 3)
+                .buttonStyle(.borderedProminent)
             }
         }
+        .onAppear {
+            title = book.title
+            author = book.author
+            genre = book.genre
+            model.downloadImage(url: book.url)
+        }
+        .padding()
     }
 }
 
-struct BookView_Previews: PreviewProvider {
-    static var previews: some View {
-        BookView(book: sampleBook)
-    }
-}
+//struct BookView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        BookView(book: sampleBook)
+//    }
+//}
