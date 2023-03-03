@@ -33,7 +33,6 @@ struct ContentView: View {
                         } label: {
                             Label("Delete", systemImage: "trash")
                         }
-                        
                     }
                 }
                 .onDelete(perform: model.deleteData1)
@@ -56,7 +55,6 @@ struct ContentView: View {
             }
             .sheet(isPresented: $isAddingNewBook) {
                 NewBookView()
-//                    .presentationDetents([.medium])
             }
         }
     }

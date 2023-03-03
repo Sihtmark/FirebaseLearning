@@ -12,9 +12,6 @@ import FirebaseStorage
 
 class ViewModel: ObservableObject {
     @Published var list = [Book]()
-    @Published var downloadedData: Data?
-    
-    let storage = Storage.storage()
     
     init() {getData()}
     
@@ -42,6 +39,7 @@ class ViewModel: ObservableObject {
     }
     
     func addData(title: String, author: String, genre: String, data: Data?) {
+        let storage = Storage.storage()
         let db = Firestore.firestore()
         
         guard data != nil else {return}
@@ -58,15 +56,16 @@ class ViewModel: ObservableObject {
             }
         }
         
-        fileRef.putData(data!, metadata: nil) { metadata, error in
-            if metadata != nil, error == nil {
-            }
-        }
+        fileRef.putData(data!, metadata: nil)
     }
     
-    func updateData(book: Book, title: String, author: String, genre: String) {
+    func updateData(book: Book, title: String, author: String, genre: String, data: Data?) {
+        let storage = Storage.storage()
         let db = Firestore.firestore()
-        db.collection("library").document(book.id).setData(["title": title, "author": author, "genre": genre]) { error in
+        let storageRef = storage.reference()
+        let refName = "images/\(UUID().uuidString).jpg"
+        let fileRef = storageRef.child(refName)
+        db.collection("library").document(book.id).setData(["title": title, "author": author, "genre": genre, "url": refName]) { error in
             if error == nil {
                 print("We just updated info in your book on the Firestore")
                 self.getData()
@@ -74,6 +73,7 @@ class ViewModel: ObservableObject {
                 print("We couldn't update info in your book on the Firestore: \(error.localizedDescription)")
             }
         }
+        fileRef.putData(data!, metadata: nil)
     }
     
     func deleteData1(offsets: IndexSet) {
@@ -94,25 +94,6 @@ class ViewModel: ObservableObject {
             } else if let error {
                 print("We couldn't delete your book from the Firestore: \(error.localizedDescription)")
             }
-        }
-    }
-    
-    func downloadImage(url: String) {
-        let storageRef = storage.reference()
-        let fileRef = storageRef.child(url)
-        if url != "" {
-            fileRef.getData(maxSize: 5 * 1024 * 1024) { data, error in
-                if let error = error {
-                    print("We couldn't download image from your Firebase: \(error.localizedDescription)")
-                }
-                if let data = data {
-                    DispatchQueue.main.async {
-                        self.downloadedData = data
-                    }
-                }
-            }
-        } else {
-            print("We couldn't download the image because of empty url string!")
         }
     }
 }
