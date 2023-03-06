@@ -18,6 +18,7 @@ struct BookView: View {
     @State private var title = ""
     @State private var author = ""
     @State private var genre = ""
+    @State private var oldUrl = ""
     @State private var data: Data?
     @State private var selectedItems = [PhotosPickerItem]()
     
@@ -62,7 +63,7 @@ struct BookView: View {
                 TextField(book.author, text: $author)
                 TextField(book.genre, text: $genre)
                 Button("Save") {
-                    model.updateData(book: book, title: title, author: author, genre: genre, data: data)
+                    model.updateData(book: book, title: title, author: author, genre: genre, oldUrl: oldUrl, data: data)
                     dismiss()
                 }
                 .disabled(title.count < 3 || author.count < 3 || genre.count < 3)
@@ -73,6 +74,7 @@ struct BookView: View {
             title = book.title
             author = book.author
             genre = book.genre
+            oldUrl = book.url
             downloadImage(url: book.url)
         }
         .padding()
