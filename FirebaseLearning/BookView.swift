@@ -50,6 +50,7 @@ struct BookView: View {
                             switch result {
                             case .success(let data):
                                 if let data = data {
+                                    model.replaceData(book: book, data: data)
                                     self.data = data
                                 } else {
                                     print("Data is nil")
@@ -63,10 +64,11 @@ struct BookView: View {
                 TextField(book.author, text: $author)
                 TextField(book.genre, text: $genre)
                 Button("Save") {
-                    model.updateData(book: book, title: title, author: author, genre: genre, oldUrl: oldUrl, data: data)
+                    model.updateData(book: book, title: title, author: author, genre: genre)
                     dismiss()
                 }
                 .disabled(title.count < 3 || author.count < 3 || genre.count < 3)
+                .disabled(title == book.title && author == book.author && genre == book.genre)
                 .buttonStyle(.borderedProminent)
             }
         }
@@ -100,9 +102,3 @@ struct BookView: View {
         }
     }
 }
-
-//struct BookView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        BookView(book: sampleBook)
-//    }
-//}

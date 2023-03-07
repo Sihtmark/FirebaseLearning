@@ -59,54 +59,14 @@ class ViewModel: ObservableObject {
         fileRef.putData(data!, metadata: nil)
     }
     
-    func updateData(book: Book, title: String, author: String, genre: String, oldUrl: String, data: Data?) {
-        var oldData: Data?
+    func updateData(book: Book, title: String, author: String, genre: String) {
         let db = Firestore.firestore()
-        let storage = Storage.storage()
-        let storageRef = storage.reference()
-        let fileRef = storageRef.child(oldUrl)
-        if oldUrl != "" {
-            fileRef.getData(maxSize: 10 * 1024 * 1024) { data, error in
-                if let error = error {
-                    print("We couldn't download image from your Firebase: \(error.localizedDescription)")
-                }
-                if let data = data {
-                    DispatchQueue.main.asyncAfter(deadline: .now()) {
-                        oldData = data
-                    }
-                }
-            }
-        } else {
-            print("We couldn't download the image because of empty url string!")
-        }
-        if oldData != data {
-            let refName = "images/\(UUID().uuidString).jpg"
-            let fileRef = storageRef.child(refName)
-            storageRef.child(oldUrl).delete { error in
-                if let error = error {
-                    print("We cannot delete your old photo: \(error.localizedDescription)")
-                } else {
-                    print("Photo deleted successfully")
-                }
-            }
-            fileRef.putData(data!, metadata: nil)
-            
-            db.collection("library").document(book.id).setData(["title": title, "author": author, "genre": genre, "url": refName]) { error in
-                if error == nil {
-                    print("We just updated info in your book on the Firebase")
-                    self.getData()
-                } else if let error {
-                    print("We couldn't update info in your book on the Firebase: \(error.localizedDescription)")
-                }
-            }
-        } else {
-            db.collection("library").document(book.id).setData(["title": title, "author": author, "genre": genre, "url": oldUrl]) { error in
-                if error == nil {
-                    print("We just updated info in your book on the Firebase")
-                    self.getData()
-                } else if let error {
-                    print("We couldn't update info in your book on the Firebase: \(error.localizedDescription)")
-                }
+        db.collection("library").document(book.id).setData(["title": title, "author": author, "genre": genre, "url": book.url]) { error in
+            if error == nil {
+                print("We just updated info in your book on the Firestore")
+                self.getData()
+            } else if let error {
+                print("We couldn't update info in your book on the Firestore: \(error.localizedDescription)")
             }
         }
     }
@@ -130,5 +90,20 @@ class ViewModel: ObservableObject {
                 print("We couldn't delete your book from the Firestore: \(error.localizedDescription)")
             }
         }
+    }
+    
+    func replaceData(book: Book, data: Data) {
+        let storage = Storage.storage()
+        let storageRef = storage.reference()
+        let refName = book.url
+        let fileRef = storageRef.child(refName)
+        fileRef.delete { error in
+            if let error = error {
+                print("We cannot delete your old photo: \(error.localizedDescription)")
+            } else {
+                print("Photo deleted successfully")
+            }
+        }
+        fileRef.putData(data, metadata: nil)
     }
 }
