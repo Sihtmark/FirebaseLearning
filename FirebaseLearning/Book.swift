@@ -16,9 +16,9 @@ struct Book: Hashable, Identifiable {
 }
 
 let sampleBook = Book(
-    id: "pojnpojp[qwjef",
+    id: "GmSnK8KwHX2hnaAEY2PG",
     title: "Lady with a dog",
     author: "Anton Pavlovich Chekhov",
     genre: "fiction",
-    url: ""
+    url: "images/2B5B72F3-8896-4623-8BEB-3CDA2DED7964.jpg"
 )
