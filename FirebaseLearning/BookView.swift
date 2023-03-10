@@ -10,76 +10,106 @@ import PhotosUI
 import FirebaseStorage
 
 struct BookView: View {
+    
     @EnvironmentObject var model: ViewModel
     @Environment(\.dismiss) var dismiss
     
     var book: Book
     
+    @State private var isEditMode = false
     @State private var title = ""
     @State private var author = ""
-    @State private var genre = ""
-    @State private var oldUrl = ""
+    @State private var url = ""
+    @State private var favorite = false
+    @State private var collections = [String]()
     @State private var data: Data?
     @State private var selectedItems = [PhotosPickerItem]()
     
     var body: some View {
-        NavigationView {
-            VStack(alignment: .leading) {
-                if let data = data, let uiImage = UIImage(data: data) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFit()
-                        .cornerRadius(15)
-                        .padding()
-                } else {
-                    Image(systemName: "photo.artframe")
-                        .resizable()
-                        .foregroundColor(.yellow.opacity(0.6))
-                        .background(.green)
-                        .scaledToFit()
-                        .cornerRadius(15)
-                        .padding()
+        HStack {
+            List {
+                Section {
+                    if isEditMode {
+                            HStack {
+                                Image(systemName: title.count > 2 ? "checkmark.circle" : "square.and.pencil")
+                                    .font(.title3)
+                                    .foregroundColor(title.count > 2 ? .green : .black)
+                                TextField("Title", text: $title)
+                                    .font(.title3)
+                            }
+                            HStack {
+                                Image(systemName: author.count > 2 ? "checkmark.circle" : "square.and.pencil")
+                                    .font(.title3)
+                                    .foregroundColor(author.count > 2 ? .green : .black)
+                                TextField("Author", text: $author)
+                                    .font(.title3)
+                            }
+                    } else {
+                        Text(title)
+                        Text(author)
+                    }
                 }
                 
-                Spacer().frame(height: 30)
-                
-                PhotosPicker("Set image", selection: $selectedItems, maxSelectionCount: 1, matching: .images)
-                    .onChange(of: selectedItems) { newValue in
-                        guard let item = selectedItems.first else {return}
-                        item.loadTransferable(type: Data.self) { result in
-                            switch result {
-                            case .success(let data):
-                                if let data = data {
-                                    model.replaceData(book: book, data: data)
-                                    self.data = data
-                                } else {
-                                    print("Data is nil")
+                Section {
+                    if let data = data, let uiImage = UIImage(data: data) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFill()
+                            .cornerRadius(15)
+                            .padding()
+                    } else {
+                        ZStack(alignment: .center) {
+                            Image(systemName: "photo.on.rectangle.angled")
+                                .resizable()
+                                .scaledToFit()
+                                .cornerRadius(15)
+                            .padding()
+                        }
+                        .frame(height: 100)
+                        .frame(maxWidth: .infinity)
+                    }
+                    HStack {
+                        Spacer()
+                        PhotosPicker(data != nil ? "Change picture" : "Add picture", selection: $selectedItems, maxSelectionCount: 1, matching: .images)
+                            .onChange(of: selectedItems) { newValue in
+                                guard let item = selectedItems.first else {return}
+                                item.loadTransferable(type: Data.self) { result in
+                                    switch result {
+                                    case .success(let data):
+                                        if let data = data {
+                                            self.data = data
+                                            model.replaceData(book: book, data: data)
+                                        } else {
+                                            print("Data is nil")
+                                        }
+                                    case .failure(let failure):
+                                        fatalError("\(failure)")
+                                    }
                                 }
-                            case .failure(let failure):
-                                fatalError("\(failure)")
-                            }
+                        }
+                        Spacer()
+                    }
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(isEditMode ? "Save" : "Edit") {
+                        isEditMode.toggle()
+                        if !isEditMode {
+                            model.updateData(book: book, title: title, author: author, favorite: favorite, collections: collections)
                         }
                     }
-                TextField(book.title, text: $title)
-                TextField(book.author, text: $author)
-                TextField(book.genre, text: $genre)
-                Button("Save") {
-                    model.updateData(book: book, title: title, author: author, genre: genre)
-                    dismiss()
                 }
-                .disabled(title.count < 3 || author.count < 3 || genre.count < 3)
-                .disabled(title == book.title && author == book.author && genre == book.genre)
-                .buttonStyle(.borderedProminent)
             }
         }
         .onAppear {
             title = book.title
             author = book.author
-            genre = book.genre
-            oldUrl = book.url
+            url = book.url
+            favorite = book.favorite
+            collections = book.collections
             downloadImage(url: book.url)
         }
-        .padding()
     }
     
     func downloadImage(url: String) {

@@ -12,8 +12,11 @@ import FirebaseStorage
 
 class ViewModel: ObservableObject {
     @Published var list = [Book]()
+    @Published var collections = [String]()
     
-    init() {getData()}
+    init() {
+        getData()
+    }
     
     func getData() {
         let db = Firestore.firestore()
@@ -22,12 +25,18 @@ class ViewModel: ObservableObject {
                 if let snapshot = snapshot {
                     DispatchQueue.main.async {
                         self.list = snapshot.documents.map { doc in
+                            for collection in doc["collections"] as? [String] ?? [] {
+                                if !self.collections.contains(collection) {
+                                    self.collections.append(collection)
+                                }
+                            }
                             return Book(
                                 id: doc.documentID,
                                 title: doc["title"] as? String ?? "",
                                 author: doc["author"] as? String ?? "",
-                                genre: doc["genre"] as? String ?? "",
-                                url: doc["url"] as? String ?? ""
+                                url: doc["url"] as? String ?? "",
+                                favorite: doc["favorite"] as? Bool ?? false,
+                                collections: doc["collections"] as? [String] ?? []
                             )
                         }
                     }
@@ -36,9 +45,16 @@ class ViewModel: ObservableObject {
                 print("We couldn't get data from the Firestore: \(error.localizedDescription)")
             }
         }
+        for book in list {
+            for i in book.collections {
+                if !collections.contains(i) {
+                    collections.append(i)
+                }
+            }
+        }
     }
     
-    func addData(title: String, author: String, genre: String, data: Data?) {
+    func addData(title: String, author: String, favorite: Bool, collections: [String], data: Data?) {
         let storage = Storage.storage()
         let db = Firestore.firestore()
         
@@ -47,7 +63,7 @@ class ViewModel: ObservableObject {
         let refName = "images/\(UUID().uuidString).jpg"
         let fileRef = storageRef.child(refName)
         
-        db.collection("library").addDocument(data: ["title": title, "author": author, "genre": genre, "url": refName]) { error in
+        db.collection("library").addDocument(data: ["title": title, "author": author, "favorite": favorite, "collections": collections, "url": refName]) { error in
             if error == nil {
                 print("We just added new book to the data on the Firebase")
                 self.getData()
@@ -59,9 +75,9 @@ class ViewModel: ObservableObject {
         fileRef.putData(data!, metadata: nil)
     }
     
-    func updateData(book: Book, title: String, author: String, genre: String) {
+    func updateData(book: Book, title: String, author: String, favorite: Bool, collections: [String]) {
         let db = Firestore.firestore()
-        db.collection("library").document(book.id).setData(["title": title, "author": author, "genre": genre, "url": book.url]) { error in
+        db.collection("library").document(book.id).setData(["title": title, "author": author, "favorite": favorite, "collections": collections, "url": book.url, "favorite": favorite, "collections": collections]) { error in
             if error == nil {
                 print("We just updated info in your book on the Firestore")
                 self.getData()
@@ -105,5 +121,11 @@ class ViewModel: ObservableObject {
             }
         }
         fileRef.putData(data, metadata: nil)
+    }
+    
+    func addToCollections(newCollection: String) {
+        if !collections.contains(newCollection) {
+            collections.append(newCollection)
+        }
     }
 }

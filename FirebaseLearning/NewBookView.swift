@@ -9,18 +9,22 @@ import SwiftUI
 import PhotosUI
 
 struct NewBookView: View {
+    
     @EnvironmentObject var model: ViewModel
     @Environment(\.dismiss) var dismiss
     
     @State private var title = ""
     @State private var author = ""
-    @State private var genre = ""
+    @State private var favorite = false
+    @State private var collections = [String]()
     @State private var selectedItems = [PhotosPickerItem]()
     @State private var data: Data?
+    @State private var newCollection = ""
+    
     var body: some View {
         NavigationStack {
             List {
-                Section {
+                Section("Book info:") {
                     HStack {
                         Image(systemName: title.count > 2 ? "checkmark.circle" : "square.and.pencil")
                             .font(.title3)
@@ -35,15 +39,30 @@ struct NewBookView: View {
                         TextField("Author", text: $author)
                             .font(.title3)
                     }
+                }
+                Section("Collections:") {
+                    ForEach(model.collections, id: \.self) { collection in
+                        Button {
+                            addToCollections(collection: collection)
+                        } label: {
+                            HStack {
+                                Image(systemName: collections.contains(collection) ? "checkmark.circle" : "circle")
+                                Text(collection)
+                            }
+                        }
+
+                    }
                     HStack {
-                        Image(systemName: genre.count > 2 ? "checkmark.circle" : "square.and.pencil")
-                            .font(.title3)
-                            .foregroundColor(genre.count > 2 ? .green : .black)
-                        TextField("Genre", text: $genre)
-                            .font(.title3)
+                        TextField("Add new collection", text: $newCollection)
+                        Button("Add") {
+                            addToCollections(collection: newCollection)
+                            model.addToCollections(newCollection: newCollection)
+                            newCollection = ""
+                        }
+                        .disabled(newCollection.count < 1)
                     }
                 }
-                Section {
+                Section("Picture:") {
                     if let data = data, let uiImage = UIImage(data: data) {
                         Image(uiImage: uiImage)
                             .resizable()
@@ -56,7 +75,7 @@ struct NewBookView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .cornerRadius(15)
-                            .padding()
+                                .padding()
                         }
                         .frame(height: 100)
                         .frame(maxWidth: .infinity)
@@ -78,7 +97,7 @@ struct NewBookView: View {
                                         fatalError("\(failure)")
                                     }
                                 }
-                        }
+                            }
                         Spacer()
                     }
                 }
@@ -92,13 +111,28 @@ struct NewBookView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
-                        model.addData(title: title, author: author, genre: genre, data: data)
-                        dismiss()
+                    HStack {
+                        Button {
+                            favorite.toggle()
+                        } label: {
+                            Image(systemName: favorite ? "star.fill" : "star")
+                        }
+                        Button("Save") {
+                            model.addData(title: title, author: author, favorite: favorite, collections: collections, data: data)
+                            dismiss()
+                        }
+                        .disabled(title.count < 2 || author.count < 2 || data == nil)
                     }
-                    .disabled(title.count < 2 || author.count < 2 || genre.count < 2 || data == nil)
+                    
+
                 }
+            }
         }
+    }
+    
+    func addToCollections(collection: String) {
+        if !collections.contains(collection) {
+            collections.append(collection)
         }
     }
 }
