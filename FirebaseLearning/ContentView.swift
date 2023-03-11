@@ -15,32 +15,34 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(model.list, id: \.self) { book in
-                    NavigationLink {
-                        BookView(book: book)
-                    } label: {
-                        VStack(alignment: .leading) {
-                            Text(book.title)
-                                .font(.title3)
-                                .bold()
-                            Text(book.author)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                    .swipeActions(allowsFullSwipe: true) {
-                        Button(role: .destructive) {
-                            model.deleteData(book: book)
+                Section("My books") {
+                    ForEach(model.list, id: \.self) { book in
+                        NavigationLink {
+                            BookView(book: book)
                         } label: {
-                            Label("Delete", systemImage: "trash")
+                            VStack(alignment: .leading) {
+                                Text(book.title)
+                                    .font(.title3)
+                                    .bold()
+                                Text(book.author)
+                                    .foregroundColor(.secondary)
+                            }
                         }
+                        //                    .swipeActions(allowsFullSwipe: true) {
+                        //                        Button(role: .destructive) {
+                        //                            model.deleteData(book: book)
+                        //                        } label: {
+                        //                            Label("Delete", systemImage: "trash")
+                        //                        }
+                        //                    }
                     }
-                }
-                .onDelete(perform: model.deleteData1)
-                .onMove {
-                    model.list.move(fromOffsets: $0, toOffset: $1)
+                    .onDelete(perform: model.deleteData1)
+                    .onMove(perform: model.move)
                 }
             }
+            .listStyle(.sidebar)
             .navigationTitle("My library")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     EditButton()
@@ -56,6 +58,7 @@ struct ContentView: View {
             .sheet(isPresented: $isAddingNewBook) {
                 NewBookView()
             }
+            .accentColor(.red)
         }
     }
 }

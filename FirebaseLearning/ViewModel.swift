@@ -93,6 +93,10 @@ class ViewModel: ObservableObject {
         }
     }
     
+    func move(indices: IndexSet, newOffset: Int) {
+        list.move(fromOffsets: indices, toOffset: newOffset)
+    }
+    
     func deleteData(book: Book) {
         let db = Firestore.firestore()
         db.collection("library").document(book.id).delete { error in
